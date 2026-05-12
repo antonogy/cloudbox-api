@@ -1,0 +1,29 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           Int    @id @default(autoincrement())
+  email        String @unique
+  passwordHash String
+  usedSpace    Int
+  files        File[]
+}
+
+model File {
+  id           Int     @id @default(autoincrement())
+  originalName String
+  filename     String
+  mimeType     String
+  size         Int
+  path         String
+  previewPath  String?
+  user         User    @relation(fields: [userId], references: [id])
+  userId       Int
+}
