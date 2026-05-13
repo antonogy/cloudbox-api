@@ -9,9 +9,15 @@ export class ConfigService
   extends NestConfigService
   implements JwtOptionsFactory
 {
-  getDbOptions(): Record<string, string> {
+  getDbOptions(): { connectionString: string } {
+    const connectionString = this.get<string>('DATABASE_URL');
+
+    if (!connectionString) {
+      throw new Error('DATABASE_URL is not defined');
+    }
+
     return {
-      connectionString: `${this.get<string>('DATABASE_URL')}`,
+      connectionString,
     };
   }
 
