@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { validate } from 'class-validator';
-import { Observable } from 'rxjs';
 import { LoginDto } from './dto/login.dto';
 import { Request } from 'express';
 
@@ -18,7 +17,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const errors = await this.validateCredentials(request.body);
     if (errors.length > 0) {
-      throw new BadRequestException('Invalid credentials');
+      throw new BadRequestException('Validation of login credentials failed');
     }
 
     return super.canActivate(context) as Promise<boolean>;
