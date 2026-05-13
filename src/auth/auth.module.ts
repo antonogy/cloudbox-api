@@ -28,7 +28,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
       imports: [ConfigModule],
       useExisting: ConfigService,
     }),
-    ThrottlerModule,
   ],
   exports: [AuthService],
 })

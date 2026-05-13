@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService as NestConfigService } from '@nestjs/config';
 import { JwtModuleOptions, JwtOptionsFactory } from '@nestjs/jwt';
-import { Resolvable, ThrottlerModuleOptions } from '@nestjs/throttler';
+import { ThrottlerModuleOptions } from '@nestjs/throttler';
 import ms from 'ms';
 
 @Injectable()
@@ -26,6 +26,7 @@ export class ConfigService
       secret: this.getJwtSecret(),
       signOptions: {
         expiresIn,
+        issuer: this.get<string>('AUTH_JWT_ISSUER') || undefined,
       },
     };
   }
@@ -40,16 +41,12 @@ export class ConfigService
     return secret;
   }
 
-  getJwtIssuer(): string | undefined {
-    return this.get<string>('AUTH_JWT_ISSUER');
-  }
-
   getThrottlerOptions(): ThrottlerModuleOptions {
     return {
       throttlers: [
         {
-          ttl: this.get<Resolvable<number>>('THROTTLER_TTL') ?? 60000,
-          limit: this.get<Resolvable<number>>('THROTTLER_LIMIT') ?? 10,
+          ttl: parseInt(this.get('THROTTLER_TTL') ?? '', 10) || 60000,
+          limit: parseInt(this.get('THROTTLER_LIMIT') ?? '', 10) || 10,
         },
       ],
     };
