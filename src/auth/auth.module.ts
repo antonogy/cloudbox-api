@@ -28,5 +28,6 @@ import { ConfigModule, ConfigService } from 'src/config';
       useExisting: ConfigService,
     }),
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

@@ -1,5 +1,5 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtPayload } from 'jsonwebtoken';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from 'src/config';
@@ -16,6 +16,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: JwtPayload): UserInRequest {
-    return { id: Number(payload.sub), email: String(payload.email) };
+    const id = Number(payload.sub);
+    if (!payload.sub || isNaN(id)) {
+      throw new UnauthorizedException('Invalid token payload');
+    }
+    return { id, email: String(payload.email) };
   }
 }
