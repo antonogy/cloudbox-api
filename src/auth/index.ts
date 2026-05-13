@@ -1,2 +1,2 @@
 export { AuthModule } from './auth.module';
-export { AuthenticatedGuard } from './authenticated-guard';
+export { AuthenticatedGuard } from './authenticated.guard';

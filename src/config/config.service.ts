@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService as NestConfigService } from '@nestjs/config';
 import { JwtModuleOptions, JwtOptionsFactory } from '@nestjs/jwt';
+import { Resolvable, ThrottlerModuleOptions } from '@nestjs/throttler';
 import ms from 'ms';
 
 @Injectable()
@@ -15,22 +16,42 @@ export class ConfigService
   }
 
   createJwtOptions(): JwtModuleOptions {
-    const secret = this.get<string>('AUTH_JWT_SECRET');
     const expiresIn = this.get<ms.StringValue>('AUTH_JWT_EXPIRES_IN');
-
-    if (!secret) {
-      throw new Error('AUTH_JWT_SECRET is not defined');
-    }
 
     if (!expiresIn) {
       throw new Error('AUTH_JWT_EXPIRES_IN is not defined');
     }
 
     return {
-      secret,
+      secret: this.getJwtSecret(),
       signOptions: {
         expiresIn,
       },
+    };
+  }
+
+  getJwtSecret(): string {
+    const secret = this.get<string>('AUTH_JWT_SECRET');
+
+    if (!secret) {
+      throw new Error('AUTH_JWT_SECRET is not defined');
+    }
+
+    return secret;
+  }
+
+  getJwtIssuer(): string | undefined {
+    return this.get<string>('AUTH_JWT_ISSUER');
+  }
+
+  getThrottlerOptions(): ThrottlerModuleOptions {
+    return {
+      throttlers: [
+        {
+          ttl: this.get<Resolvable<number>>('THROTTLER_TTL') ?? 60000,
+          limit: this.get<Resolvable<number>>('THROTTLER_LIMIT') ?? 10,
+        },
+      ],
     };
   }
 }

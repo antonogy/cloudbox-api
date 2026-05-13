@@ -11,15 +11,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.createJwtOptions().secret as string,
+      secretOrKey: configService.getJwtSecret(),
     });
   }
 
   validate(payload: JwtPayload): UserInRequest {
     const id = Number(payload.sub);
-    if (!payload.sub || isNaN(id)) {
+    if (
+      !payload.sub ||
+      isNaN(id) ||
+      !payload.email ||
+      typeof payload.email !== 'string'
+    ) {
       throw new UnauthorizedException('Invalid token payload');
     }
-    return { id, email: String(payload.email) };
+    return { id, email: payload.email };
   }
 }

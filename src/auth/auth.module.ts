@@ -7,8 +7,9 @@ import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { LocalAuthGuard } from './local-auth.guard';
-import { AuthenticatedGuard } from './authenticated-guard';
+import { AuthenticatedGuard } from './authenticated.guard';
 import { ConfigModule, ConfigService } from 'src/config';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   controllers: [AuthController],
@@ -27,6 +28,7 @@ import { ConfigModule, ConfigService } from 'src/config';
       imports: [ConfigModule],
       useExisting: ConfigService,
     }),
+    ThrottlerModule,
   ],
   exports: [AuthService],
 })
