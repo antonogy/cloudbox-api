@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserService, UserInRequest } from 'src/user';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
 
 export type AuthResponse = {
   access_token: string;
@@ -18,8 +19,7 @@ export class AuthService {
     password: string,
   ): Promise<UserInRequest | null> {
     const user = await this.userService.user({ email });
-    // @Todo: compare password using bcrypt
-    if (user && user.passwordHash === password) {
+    if (user && (await bcrypt.compare(password, user.passwordHash))) {
       const { passwordHash, usedSpace, ...userWithoutPassword } = user;
       return userWithoutPassword;
     }

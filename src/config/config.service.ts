@@ -15,10 +15,21 @@ export class ConfigService
   }
 
   createJwtOptions(): JwtModuleOptions {
+    const secret = this.get<string>('AUTH_JWT_SECRET');
+    const expiresIn = this.get<ms.StringValue>('AUTH_JWT_EXPIRES_IN');
+
+    if (!secret) {
+      throw new Error('AUTH_JWT_SECRET is not defined');
+    }
+
+    if (!expiresIn) {
+      throw new Error('AUTH_JWT_EXPIRES_IN is not defined');
+    }
+
     return {
-      secret: this.get<string>('AUTH_JWT_SECRET'),
+      secret,
       signOptions: {
-        expiresIn: this.get<ms.StringValue>('AUTH_JWT_EXPIRES_IN'),
+        expiresIn,
       },
     };
   }
