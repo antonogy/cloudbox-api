@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from './config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule,
     AuthModule,
     UserModule,
     ThrottlerModule.forRootAsync({
