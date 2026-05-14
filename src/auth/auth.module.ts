@@ -28,6 +28,6 @@ import { ConfigModule, ConfigService } from 'src/config';
       useExisting: ConfigService,
     }),
   ],
-  exports: [AuthService],
+  exports: [AuthenticatedGuard],
 })
 export class AuthModule {}
